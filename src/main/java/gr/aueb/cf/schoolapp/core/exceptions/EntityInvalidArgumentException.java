@@ -6,8 +6,4 @@ public class EntityInvalidArgumentException extends EntityGenericException {
     public EntityInvalidArgumentException(String code, String message) {
         super(code + DEFAULT_CODE, message);
     }
-
-    public EntityInvalidArgumentException(String code, String message, Throwable cause) {
-        super(code + DEFAULT_CODE, message, cause);
-    }
 }

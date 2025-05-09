@@ -6,8 +6,4 @@ public class EntityNotAuthorizedException extends EntityGenericException {
     public EntityNotAuthorizedException(String code, String message) {
         super(code + DEFAULT_CODE, message);
     }
-
-    public EntityNotAuthorizedException(String code, String message, Throwable cause) {
-        super(code + DEFAULT_CODE, message, cause);
-    }
 }

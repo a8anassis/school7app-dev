@@ -10,9 +10,4 @@ public abstract class EntityGenericException extends Exception {
         super(message);
         this.code = code;
     }
-
-    public EntityGenericException(String code, String message, Throwable cause) {
-        super(message, cause);
-        this.code = code;
-    }
 }

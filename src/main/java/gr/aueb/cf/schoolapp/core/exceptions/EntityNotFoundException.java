@@ -6,8 +6,4 @@ public class EntityNotFoundException extends EntityGenericException {
     public EntityNotFoundException(String code, String message) {
         super(code + DEFAULT_CODE, message);
     }
-
-    public EntityNotFoundException(String code, String message, Throwable cause) {
-        super(code + DEFAULT_CODE, message, cause);
-    }
 }
