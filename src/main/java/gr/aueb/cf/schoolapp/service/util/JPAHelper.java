@@ -15,22 +15,22 @@ public class JPAHelper {
     private static final ThreadLocal<EntityManager> threadLocal = new ThreadLocal<>();
 //    private static final HikariConfig config = new HikariConfig();
 //    private static final Map<String, Object> properties = new HashMap<>();
-
+//
 //    static {
-//        config.setJdbcUrl("jdbc:mysql://localhost:3306/school6jaxrshiberdb?serverTimezone=UTC");
-//        config.setUsername("school6user");
-//        config.setPassword("12345");
-
-        // Use env variables for storing sensitive data for database connectivity
+////        config.setJdbcUrl("jdbc:mysql://localhost:3306/school6jaxrshiberdb?serverTimezone=UTC");
+////        config.setUsername("school6user");
+////        config.setPassword("12345");
+//
+//       //  Use env variables for storing sensitive data for database connectivity
 //        config.setJdbcUrl(System.getenv("SCHOOL7_DB_HOST") + ":" + System.getenv("SCHOOL7_DB_PORT") +
 //                "/" + System.getenv("SCHOOL7_DB_DATABASE"));
 //        config.setUsername(System.getenv("SCHOOL7_DB_USERNAME"));
 //        config.setPassword(System.getenv("SCHOOL7_DB_PASSWORD"));
-
-//      Optional
+//
+//    //  Optional
 //        config.setMaximumPoolSize(20);
 //        config.setConnectionTimeout(20000);
-
+//
 //        DataSource dataSource = new HikariDataSource(config);
 //        properties.put("hibernate.connection.datasource", dataSource);
 //    }
