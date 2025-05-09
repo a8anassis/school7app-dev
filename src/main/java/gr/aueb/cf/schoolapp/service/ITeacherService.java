@@ -11,9 +11,11 @@ import java.util.List;
 import java.util.Map;
 
 public interface ITeacherService {
-    TeacherReadOnlyDTO insertTeacher(TeacherInsertDTO insertDTO) throws EntityAlreadyExistsException, EntityInvalidArgumentException;
+    TeacherReadOnlyDTO insertTeacher(TeacherInsertDTO insertDTO)
+            throws EntityAlreadyExistsException, EntityInvalidArgumentException;
 
-    TeacherReadOnlyDTO updateTeacher(TeacherUpdateDTO updateDTO) throws EntityNotFoundException, EntityInvalidArgumentException;
+    TeacherReadOnlyDTO updateTeacher(TeacherUpdateDTO updateDTO)
+            throws EntityNotFoundException, EntityInvalidArgumentException;
 
     void deleteTeacher(Object id) throws EntityNotFoundException;
 
