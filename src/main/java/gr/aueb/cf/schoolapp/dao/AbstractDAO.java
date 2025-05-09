@@ -83,7 +83,6 @@ public abstract class AbstractDAO<T extends IdentifiableEntity> implements IGene
         CriteriaQuery<Long> countQuery = builder.createQuery(Long.class);
         Root<T> entityRoot = countQuery.from(persistenceClass);
 
-        // Apply the same criteria filtering as your getByCriteriaPaginated method
         List<Predicate> predicates = getPredicatesList(builder, entityRoot, criteria);
         countQuery.select(builder.count(entityRoot))
                 .where(predicates.toArray(new Predicate[0]));
@@ -185,8 +184,6 @@ public abstract class AbstractDAO<T extends IdentifiableEntity> implements IGene
 
             // Handling the cases where the value is a List, Map or a "isNull" condition
             if (value instanceof List) {
-                // For 'IN' condition
-               // predicates.add(builder.in(resolvePath(entityRoot, key)).value(value));
                 Path<?> path = resolvePath(entityRoot, key);
                 CriteriaBuilder.In<Object> inClause = builder.in(path);
                 for (Object v : (List<?>) value) {

@@ -53,17 +53,14 @@ public class TeacherServiceImpl implements ITeacherService {
 
             TeacherReadOnlyDTO readOnlyDTO = teacherDAO.insert(teacher)
                     .map(Mapper::mapToTeacherReadOnlyDTO)
-                    .orElseThrow(() -> {
-                        LOGGER.error("Teacher with VAT={} not inserted",  insertDTO.getVat());
-                        return new EntityInvalidArgumentException("Teacher", "Teacher with VAT=" + insertDTO.getVat() + " not inserted");
-                    });
+                    .orElseThrow(() -> new EntityInvalidArgumentException("Teacher", "Teacher with VAT=" + insertDTO.getVat() + " not inserted"));
             JPAHelper.commitTransaction();
             LOGGER.info("Teacher with id: {}, vat: {},  firstname {}, lastname {} inserted",
                     teacher.getId(), teacher.getVat(), teacher.getLastname(), teacher.getFirstname());
             return readOnlyDTO;
-        } catch (Exception e) {
+        } catch (EntityInvalidArgumentException e) {
             JPAHelper.rollbackTransaction();
-            LOGGER.error("Failed to insert teacher vat={}, firstname={} , lastname={}, Reason={}",
+            LOGGER.error("Failed to insert teacher vat={}, firstname={}, lastname={}, Reason={}",
                     insertDTO.getVat(), insertDTO.getFirstname(), insertDTO.getLastname(), e.getCause(), e);
             throw e;
         } finally {
@@ -96,7 +93,7 @@ public class TeacherServiceImpl implements ITeacherService {
             return readOnlyDTO;
         } catch (EntityNotFoundException | EntityInvalidArgumentException e) {
             JPAHelper.rollbackTransaction();
-            LOGGER.error("Update Error. Teacher with id={}, vat={}, firstname={} , lastname={} not updated.",
+            LOGGER.error("Update Error. Teacher with id={}, vat={}, firstname={}, lastname={} not updated.",
                     updateDTO.getId(), updateDTO.getVat(), updateDTO.getFirstname(), updateDTO.getLastname(), e);
             throw e;
         } finally {
