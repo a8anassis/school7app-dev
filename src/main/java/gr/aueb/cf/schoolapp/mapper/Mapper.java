@@ -28,7 +28,9 @@ public class Mapper {
     }
 
     public static List<TeacherReadOnlyDTO> teachersToReadOnlyDTOs(List<Teacher> teachers) {
-        return teachers.stream().map(Mapper::mapToTeacherReadOnlyDTO).collect(Collectors.toList());
+        return teachers.stream()
+                .map(Mapper::mapToTeacherReadOnlyDTO)
+                .collect(Collectors.toList());
     }
 
     public static Map<String , Object> mapToCriteria(TeacherFiltersDTO filtersDTO) {
@@ -47,11 +49,6 @@ public class Mapper {
         }
         return filters;
     }
-
-//    public static User mapToUser(UserInsertDTO dto) {
-//        return new User(null, dto.getUsername(), SecUtil.hashPassword(dto.getPassword()),
-//                RoleType.valueOf(dto.getRole()));
-//    }
 
     public static User mapToUser(UserInsertDTO dto) {
         return new User(null, dto.getUsername(), dto.getPassword(),

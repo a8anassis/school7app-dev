@@ -2,6 +2,7 @@ package gr.aueb.cf.schoolapp.rest;
 
 import gr.aueb.cf.schoolapp.core.exceptions.EntityAlreadyExistsException;
 import gr.aueb.cf.schoolapp.core.exceptions.EntityInvalidArgumentException;
+import gr.aueb.cf.schoolapp.core.exceptions.EntityNotAuthorizedException;
 import gr.aueb.cf.schoolapp.core.exceptions.EntityNotFoundException;
 import gr.aueb.cf.schoolapp.dto.*;
 import gr.aueb.cf.schoolapp.mapper.Mapper;
@@ -13,8 +14,10 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.*;
 import lombok.RequiredArgsConstructor;
 
+import java.net.URI;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 @ApplicationScoped
 @RequiredArgsConstructor(onConstructor = @__(@Inject))
@@ -28,16 +31,23 @@ public class TeacherRestController {
     @Path("")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response addTeacher(TeacherInsertDTO insertDTO, @Context UriInfo uriInfo)
+    public Response addTeacher(TeacherInsertDTO insertDTO, @Context UriInfo uriInfo)    //  injects the current request’s URI information
     throws EntityInvalidArgumentException, EntityAlreadyExistsException {
         List<String> errors = ValidatorUtil.validateDTO(insertDTO);
         if (!errors.isEmpty()) {
             throw new EntityInvalidArgumentException("Teacher", String.join("\n", errors));
         }
         TeacherReadOnlyDTO readOnlyDTO = teacherService.insertTeacher(insertDTO);
-        return Response.created(uriInfo.getAbsolutePathBuilder().path(readOnlyDTO.getId().toString()).build())
-                .entity(readOnlyDTO)
+
+        // Build the URI for the new resource
+        URI newResourceUri = uriInfo.getAbsolutePathBuilder()
+                .path(String.valueOf(readOnlyDTO.getId()))
                 .build();
+        return Response.created(newResourceUri).entity(readOnlyDTO).build();
+
+//        return Response.created(uriInfo.getAbsolutePathBuilder().path(readOnlyDTO.getId().toString()).build())
+//                .entity(readOnlyDTO)
+//                .build();
     }
 
     @PUT
@@ -46,7 +56,11 @@ public class TeacherRestController {
     @Produces(MediaType.APPLICATION_JSON)
     public Response updateTeacher(@PathParam("teacherId") Long teacherId,
                                   TeacherUpdateDTO updateDTO)
-            throws EntityInvalidArgumentException, EntityNotFoundException {
+            throws EntityInvalidArgumentException, EntityNotFoundException, EntityNotAuthorizedException {
+
+//        if (!Objects.equals(updateDTO.getId(), teacherId)) {
+//            throw new EntityNotAuthorizedException("Teacher", "Not authorized to update id: " + teacherId);
+//        }
         List<String> errors = ValidatorUtil.validateDTO(updateDTO);
         if (!errors.isEmpty()) {
             throw new EntityInvalidArgumentException("Teacher", String.join(", ", errors));
@@ -60,9 +74,12 @@ public class TeacherRestController {
     @Path("/{teacherId}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response deleteTeacher(@PathParam("teacherId") Long teacherId)
-            throws EntityNotFoundException {
+            throws EntityNotFoundException, EntityNotAuthorizedException {
 
         TeacherReadOnlyDTO dto = teacherService.getTeacherById(teacherId);
+//        if (!Objects.equals(dto.getId(), teacherId)) {
+//            throw new EntityNotAuthorizedException("Teacher", "Not authorized to update id: " + teacherId);
+//        }
         teacherService.deleteTeacher(teacherId);
         return Response.status(Response.Status.OK).entity(dto).build();
     }
@@ -72,10 +89,11 @@ public class TeacherRestController {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getTeacher(@PathParam("teacherId") Long id,
                                @Context SecurityContext securityContext)
-            throws EntityNotFoundException {
+            throws EntityNotFoundException, EntityNotAuthorizedException {
 
 //        if (!securityContext.isUserInRole("TEACHER")) {
-//            return Response.status(Response.Status.UNAUTHORIZED).build();
+////            return Response.status(Response.Status.UNAUTHORIZED).build();
+//            throw new EntityNotAuthorizedException("Teacher", "not authorized to get teacher id: " + id);
 //        }
         TeacherReadOnlyDTO dto = teacherService.getTeacherById(id);
         return Response.status(Response.Status.OK).entity(dto).build();
@@ -121,6 +139,7 @@ public class TeacherRestController {
         // Calculate total pages
         int totalPages = (int) Math.ceil((double) totalItems / size);
 
+//        compiler infers the generic type T from the type of items
         return new PaginatedResult<>(
                 items,
                 page,
@@ -128,8 +147,5 @@ public class TeacherRestController {
                 totalPages,
                 totalItems
         );
-//        return Response.status(Response.Status.OK)
-//                .entity(readOnlyDTOS)
-//                .build();
     }
 }

@@ -3,6 +3,7 @@
 ---
 
 - JDK 17
+- Jakarta EE 10
 - Apache Tomcat 10.1
 
 # **Installation**
@@ -18,4 +19,4 @@
 # **Usage**
 
 ---
-The server will be listening on localhost:8080/school7. The last part of the path (/school) is the name of the war file.
+The server will be listening on localhost:8080/school7. The last part of the path (/school7) is the name of the war file.
