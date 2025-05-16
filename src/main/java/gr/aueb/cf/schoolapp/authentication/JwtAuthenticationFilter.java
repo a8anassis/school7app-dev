@@ -1,5 +1,6 @@
 package gr.aueb.cf.schoolapp.authentication;
 
+import gr.aueb.cf.schoolapp.core.exceptions.EntityNotAuthorizedException;
 import gr.aueb.cf.schoolapp.dao.IUserDAO;
 import gr.aueb.cf.schoolapp.model.User;
 import gr.aueb.cf.schoolapp.security.CustomSecurityContext;
@@ -46,17 +47,17 @@ public class JwtAuthenticationFilter implements ContainerRequestFilter {
         if (isPublicPath(path)) {
             return;
         }
-
-        String authorizationHeader = requestContext.getHeaderString(HttpHeaders.AUTHORIZATION);
-        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
-            LOGGER.warn("Missing or invalid Authorization header");
-//            throw new NotAuthorizedException("User", "Authorization header must be provided");
-            throw new NotAuthorizedException("Authorization header must be provided");
-        }
-
-        String token = authorizationHeader.substring("Bearer ".length()).trim();
-
         try {
+            String authorizationHeader = requestContext.getHeaderString(HttpHeaders.AUTHORIZATION);
+            if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
+                LOGGER.warn("Missing or invalid Authorization header");
+    //            throw new NotAuthorizedException("User", "Authorization header must be provided");
+                throw new EntityNotAuthorizedException("User", "Authorization header must be provided");
+            }
+
+            String token = authorizationHeader.substring("Bearer ".length()).trim();
+
+//        try {
 //            String username = jwtService.extractSubject(token);
 //            if (username != null && (securityContext == null || securityContext.getUserPrincipal() == null)) {
 //                User user = userDAO.getByUsername(username).orElse(null);
@@ -70,26 +71,25 @@ public class JwtAuthenticationFilter implements ContainerRequestFilter {
             String username = jwtService.extractSubject(token);
             if (username == null) {
                 LOGGER.warn("Invalid token - no subject");
-                throw new NotAuthorizedException("Invalid token");
+                throw new EntityNotAuthorizedException("User", "Invalid token");
             }
 
             if (securityContext == null || securityContext.getUserPrincipal() == null) {
                 User user = userDAO.getByUsername(username)
                         .orElseThrow(() -> {
                             LOGGER.warn("User not found {}", username);
-                            return new NotAuthorizedException("Invalid credentials");
+                            return new EntityNotAuthorizedException("User", "Invalid credentials");
                         });
 
                 if (!jwtService.isTokenValid(token, user)) {
                     LOGGER.warn("Invalid token for user {}",  username);
-                    throw new NotAuthorizedException("Invalid token");
+                    throw new EntityNotAuthorizedException("User", "Invalid token");
                 }
 
                 requestContext.setSecurityContext(new CustomSecurityContext(user));
             }
-        } catch (Exception e) {
+        } catch (EntityNotAuthorizedException e) {
             LOGGER.warn("JWT validation failed", e);
-            throw new NotAuthorizedException("Invalid token");
         }
     }
 
