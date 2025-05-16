@@ -134,7 +134,6 @@ public abstract class AbstractDAO<T extends IdentifiableEntity> implements IGene
             predicates.add(predicateLike);
         }
         return predicates;
-
     }
 
     protected Path<?> resolvePath(Root<T> root, String expression) {

@@ -1,12 +1,10 @@
 <configuration>
 <!--    <appender name="FILE" class="ch.qos.logback.core.FileAppender">-->
     <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-<!--        <file>C:\tmp\cf.log</file>-->
         <!-- Active log -->
         <file>logs/cf.log</file>
         <append>true</append>
                 <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-<!--                    <fileNamePattern>C:\Users\a8ana\IdeaProjects\jaxrs6-hiber\cf-%d{dd-MM-yyyy}.log</fileNamePattern>-->
 <!--                    Archived -->
                     <fileNamePattern>logs/cf-%d{dd-MM-yyyy}.log</fileNamePattern>
                 </rollingPolicy>
